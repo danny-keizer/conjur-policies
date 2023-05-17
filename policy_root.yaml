@@ -1,39 +1,46 @@
-# User definitions
+# declare the groups needed
+- !group
+  id: operations
+  owner: !user admin
+- !group
+  id: development
+  owner: !user admin
 
-- !user danny
-- !user tomas
-- !user caglar
-- !user patrick
-- !user rene
+# list the users
+- !user
+  id: danny
+- !user
+  id: tomas
+- !user
+  id: caglar
+- !user
+  id: patrick
+- !user
+  id: chris
 
-# Group membership definitions
-
-- !group dev
+# add users to groups
+- !grant
+  role: !group development
   members:
     - !user danny
     - !user tomas
     - !user caglar
     - !user patrick
 
-- !group sec
-  members:
-    - !user rene
+- !grant
+  role: !group operations
+  member: !user chris
 
-# Sub-policy definitions
-
+# sub-policy with id myapp
 - !policy
   id: myapp
   body:
+    # declare a variable called app-secret within the myapp policy
     - !variable app-secret
 
-    - !permit
-      role: !group sec
-      privileges: [read]
-      resource: !variable app-secret
-
-    - !permit
-      role: !group ops
-      privileges: [read, execute]
-      resource: !variable app-secret
-    
-      
+    # grant all permissions on app-secret to members of the development group 
+    - !permit 
+      resource: app-secret 
+      privileges: [ read, update, execute ]
+      roles: 
+        - !group /development 
