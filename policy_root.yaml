@@ -1,0 +1,39 @@
+# User definitions
+
+- !user danny
+- !user tomas
+- !user caglar
+- !user patrick
+- !user rene
+
+# Group membership definitions
+
+- !group dev
+  members:
+    - !user danny
+    - !user tomas
+    - !user caglar
+    - !user patrick
+
+- !group sec
+  members:
+    - !user rene
+
+# Sub-policy definitions
+
+- !policy
+  id: myapp
+  body:
+    - !variable app-secret
+
+    - !permit
+      role: !group sec
+      privileges: [read]
+      resource: !variable app-secret
+
+    - !permit
+      role: !group ops
+      privileges: [read, execute]
+      resource: !variable app-secret
+    
+      
